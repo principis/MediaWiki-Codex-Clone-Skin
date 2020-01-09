@@ -111,7 +111,7 @@ class CodexTemplate extends QuickTemplate
         $action = $wgRequest->getText('action');
 
         // Suppress warnings to prevent notices about missing indexes in $this->data
-        wfSuppressWarnings();
+        Wikimedia\suppressWarnings();
 
         // Load the head element for the page
         $this->html('headelement');
@@ -120,7 +120,7 @@ class CodexTemplate extends QuickTemplate
         require 'body.php';
 
         // Restore warnings
-        wfRestoreWarnings();
+        Wikimedia\restoreWarnings();
     }
 
     /**
@@ -167,7 +167,7 @@ class CodexTemplate extends QuickTemplate
      */
     public function toolBox()
     {
-        $title = $this->translator->translate('Toolbox');
+        $title = wfMessage('Toolbox')->text();
         $li = '';
 
         if ($this->data['notspecialpage']) {
@@ -176,7 +176,7 @@ class CodexTemplate extends QuickTemplate
                 '',
                 sprintf($this->_af, htmlspecialchars($this->data['nav_urls']['whatlinkshere']['href']),
                     Linker::tooltipAndAccesskeyAttribs('t-whatlinkshere'),
-                    htmlspecialchars($this->translator->translate('whatlinkshere')))
+                    htmlspecialchars(wfMessage('whatlinkshere')->text()))
             );
         }
 
@@ -201,7 +201,7 @@ class CodexTemplate extends QuickTemplate
                     sprintf($this->_af,
                         htmlspecialchars($this->data['nav_urls'][$special]['href']),
                         Linker::tooltipAndAccesskeyAttribs('t-' . $special),
-                        htmlspecialchars($this->translator->translate($special)))
+                        htmlspecialchars(wfMessage($special)->text()))
                 );
             }
 
@@ -214,7 +214,7 @@ class CodexTemplate extends QuickTemplate
                 sprintf($this->_af,
                     htmlspecialchars($this->data['nav_urls']['print']['href']),
                     'rel="alternate" ' . Linker::tooltipAndAccesskeyAttribs('t-print'),
-                    htmlspecialchars($this->translator->translate('printableversion')))
+                    htmlspecialchars(wfMessage('printableversion')->text()))
             );
         }
 
@@ -225,19 +225,19 @@ class CodexTemplate extends QuickTemplate
                 sprintf($this->_af,
                     htmlspecialchars($this->data['nav_urls']['permalink']['href']),
                     Linker::tooltipAndAccesskeyAttribs('t-permalink'),
-                    htmlspecialchars($this->translator->translate('permalink')))
+                    htmlspecialchars(wfMessage('permalink')->text()))
             );
         } else {
             $li .= sprintf($this->_lif,
                 't-ispermalink',
                 Linker::tooltip('t-ispermalink'),
-                htmlspecialchars($this->translator->translate('permalink'))
+                htmlspecialchars(wfMessage('permalink')->text())
             );
         }
 
         printf($this->_sideboxf, $title, $li);
-        wfRunHooks('CodexTemplateToolboxEnd', array(&$this));
-        wfRunHooks('SkinTemplateToolboxEnd', array(&$this));
+        Hooks::run('CodexTemplateToolboxEnd', array(&$this));
+        Hooks::run('SkinTemplateToolboxEnd', array(&$this));
     }
 
     /**
@@ -251,7 +251,7 @@ class CodexTemplate extends QuickTemplate
      */
     public function viewsBox()
     {
-        $title = $this->translator->translate('Views');
+        $title = wfMessage('Views')->text();
         $li = '';
 
         foreach ($this->data['content_actions'] as $key => $tab) {
@@ -285,12 +285,12 @@ class CodexTemplate extends QuickTemplate
                 sprintf($this->_af,
                     htmlspecialchars($langlink['href']),
                     '',
-                    htmlspecialchars($this->translator->translate($langlink['text']))
+                    htmlspecialchars(wfMessage($langlink['text'])->text())
                 )
             );
         }
 
-        printf($this->_sideboxf, $this->html('userlangattributes'), htmlspecialchars($this->translator->translate('otherlanguages')), $links);
+        printf($this->_sideboxf, $this->html('userlangattributes'), htmlspecialchars(wfMessage('otherlanguages')->text()), $links);
     }
 
     /**
@@ -311,8 +311,8 @@ class CodexTemplate extends QuickTemplate
     {
         $links = '';
         $out = wfMsg($bar);
-        $title = wfEmptyMsg($bar, $out) ? htmlspecialchars($this->translator->translate($bar)) :
-        htmlspecialchars($this->translator->translate($out));
+        $title = wfEmptyMsg($bar, $out) ? htmlspecialchars(wfMessage($bar)->text()) :
+        htmlspecialchars(wfMessage($out)->text());
 
         if (!is_array($cont)) {
             printf($this->_sideboxf, $title, $cont);
@@ -326,7 +326,7 @@ class CodexTemplate extends QuickTemplate
                 sprintf($this->_af,
                     htmlspecialchars($val['href']),
                     Linker::tooltipAndAccesskeyAttribs($val['id']),
-                    htmlspecialchars($this->translator->translate($val['text']))
+                    htmlspecialchars(wfMessage($val['text'])->text())
                 )
             );
         }
